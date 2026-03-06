@@ -43,6 +43,14 @@ texture = ExtResource("2_0wfyh")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=1676377505]
 shape = SubResource("CircleShape2D_tbgi4")
 
+[node name="ScoreLabel" type="Label" parent="Player" unique_id=1455889969]
+offset_left = -31.0
+offset_top = -126.0
+offset_right = 38.0
+offset_bottom = -53.0
+theme_override_font_sizes/font_size = 44
+horizontal_alignment = 1
+
 [node name="Player2" type="StaticBody2D" parent="." unique_id=492563214]
 position = Vector2(913, 255)
 script = ExtResource("1_0wfyh")
@@ -56,6 +64,14 @@ texture = ExtResource("3_sugp2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player2" unique_id=540096038]
 shape = SubResource("CircleShape2D_tefeu")
+
+[node name="ScoreLabel" type="Label" parent="Player2" unique_id=947525231]
+offset_left = -35.0
+offset_top = -134.0
+offset_right = 40.0
+offset_bottom = -52.0
+theme_override_font_sizes/font_size = 44
+horizontal_alignment = 1
 
 [node name="Ball" type="RigidBody2D" parent="." unique_id=1403676391]
 position = Vector2(506, 264)

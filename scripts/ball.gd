@@ -1,47 +1,55 @@
 extends RigidBody2D
 
-# Configurações básicas
 var speed = 500
 var dir = [-1, 1]
-
-# Multiplicador de velocidade: 1.05 aumenta 5% a cada batida. 
-# Você pode ajustar esse valor direto no Inspetor do Godot agora!
 @export var speed_multiplier: float = 1.05
+@export var display_time: float = 2.0 
+
+var score_p1 = 0
+var score_p2 = 0
+
+# Verifique se os nomes "Player" e "Player2" estão iguais na sua árvore de cena!
+@onready var player1 = get_node("../Player")
+@onready var player2 = get_node("../Player2")
 
 func _ready() -> void:
-	# Importante: Conecta o sinal de colisão para a função abaixo rodar
 	body_entered.connect(_on_body_entered)
 	Reset()
 
-func _physics_process(_delta: float) -> void:
-	Score()
-
-# Esta função roda toda vez que a bola bate em algo (Player ou Parede)
 func _on_body_entered(body: Node) -> void:
-	# Aumenta a velocidade linear atual da bola
 	linear_velocity *= speed_multiplier
-	
-	# Debug no console para você ver a velocidade subindo
-	print("Batida detectada em: ", body.name, " | Nova velocidade: ", linear_velocity.length())
 
 func Reset():
-	# Para a bola completamente antes de resetar
 	linear_velocity = Vector2.ZERO
 	angular_velocity = 0
-	
-	# Reposiciona no centro
 	global_position = get_viewport_rect().size / 2
-	
-	# Congela a bola por um momento
 	freeze = true 
-	await get_tree().create_timer(1.5).timeout
+	await get_tree().create_timer(1.0).timeout
 	freeze = false
-	
-	# Lança a bola com a velocidade inicial
 	var direction = Vector2(dir.pick_random(), dir.pick_random()).normalized()
 	apply_central_impulse(direction * speed)
 
 func Score():
-	# Verifica se saiu da tela (Gols)
-	if global_position.x >= get_viewport_rect().size.x or global_position.x <= 0:
+	# Gol do Player 1 (Bola saiu pela direita)
+	if global_position.x >= get_viewport_rect().size.x:
+		score_p1 += 1
+		show_score_temp(player1, score_p1)
 		Reset()
+	
+	# Gol do Player 2 (Bola saiu pela esquerda)
+	if global_position.x <= 0:
+		score_p2 += 1
+		show_score_temp(player2, score_p2)
+		Reset()
+
+func _physics_process(_delta: float) -> void:
+	Score()
+
+func show_score_temp(player_node: Node2D, current_score: int):
+	# Essa linha é a mágica: ela procura o Label que você criou
+	var label = player_node.get_node("ScoreLabel")
+	if label:
+		label.text = str(current_score)
+		label.visible = true
+		await get_tree().create_timer(display_time).timeout
+		label.visible = false
